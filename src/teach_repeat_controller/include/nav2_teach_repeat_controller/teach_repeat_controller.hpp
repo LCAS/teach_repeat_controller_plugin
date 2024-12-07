@@ -42,7 +42,7 @@ public:
     const geometry_msgs::msg::Twist & velocity,
     nav2_core::GoalChecker * goal_checker) override;
 
-  void setPlan(const nav_msgs::msg::Path & path) override {};
+  void setPlan(const nav_msgs::msg::Path & path) override {(void) path;};
 
 protected:
 
@@ -60,7 +60,7 @@ protected:
   std::queue<geometry_msgs::msg::TwistStamped> vel_queue_; 
   std::mutex queue_mutex_;
 
-  std::shared_ptr<rclcpp_lifecycle::LifecycleSubscriper<geometry_msgs::msg::TwistStamped>> cmd_vel_sub_;
+  rclcpp::Subscription<geometry_msgs::msg::TwistStamped>::SharedPtr cmd_vel_sub_;
 
   void velCallback(const geometry_msgs::msg::TwistStamped::SharedPtr msg);
   void clearQueue();

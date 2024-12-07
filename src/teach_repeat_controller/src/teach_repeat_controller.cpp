@@ -28,13 +28,13 @@ void TeachRepeatController::configure(
   logger_ = node->get_logger();
   clock_ = node->get_clock();
 
-  declare_parameter_if_not_declared(
+  nav2_util::declare_parameter_if_not_declared(
     node, plugin_name_ + ".desired_linear_vel", rclcpp::ParameterValue(
       1.0));
-  declare_parameter_if_not_declared(
+  nav2_util::declare_parameter_if_not_declared(
     node, plugin_name_ + ".max_angular_vel", rclcpp::ParameterValue(
       1.0));
-  declare_parameter_if_not_declared(
+  nav2_util::declare_parameter_if_not_declared(
     node, plugin_name_ + ".vel_cmd_topic_", rclcpp::ParameterValue(
       "/teach_repeat/vel_cmd"));
 
@@ -64,7 +64,6 @@ void TeachRepeatController::activate() {
     logger_,
     "Activating controller: %s of type teach_repeat_controller::TeachRepeatController\"  %s",
     plugin_name_.c_str(),plugin_name_.c_str());
-  // global_pub_->on_activate();
 }
 
 void TeachRepeatController::deactivate() {
@@ -72,7 +71,6 @@ void TeachRepeatController::deactivate() {
     logger_,
     "Dectivating controller: %s of type teach_repeat_controller::TeachRepeatController\"  %s",
     plugin_name_.c_str(),plugin_name_.c_str());
-  // global_pub_->on_deactivate();
 }
 
 void TeachRepeatController::setSpeedLimit(const double& speed_limit, const bool& percentage) {
@@ -82,7 +80,7 @@ void TeachRepeatController::setSpeedLimit(const double& speed_limit, const bool&
 
 geometry_msgs::msg::TwistStamped TeachRepeatController::computeVelocityCommands(
   const geometry_msgs::msg::PoseStamped & pose,
-  const geometry_msgs::msg::TwistStamped & velocity,
+  const geometry_msgs::msg::Twist & velocity,
   nav2_core::GoalChecker * goal_checker) {
   (void)velocity;
   (void)goal_checker;
