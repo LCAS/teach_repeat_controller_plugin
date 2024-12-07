@@ -6,3 +6,6 @@ The code in implemented using the following reference: https://docs.nav2.org/plu
 
 ## How the plugin works
 TODO
+
+## Good references
+[Behavior Trees](https://youtu.be/sVUKeHMBtpQ?si=8RF7jBZ3To1EKcxs)
