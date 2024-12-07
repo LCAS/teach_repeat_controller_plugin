@@ -35,12 +35,12 @@ void TeachRepeatController::configure(
     node, plugin_name_ + ".max_angular_vel", rclcpp::ParameterValue(
       1.0));
   nav2_util::declare_parameter_if_not_declared(
-    node, plugin_name_ + ".vel_cmd_topic_", rclcpp::ParameterValue(
+    node, plugin_name_ + ".vel_cmd_topic", rclcpp::ParameterValue(
       "/teach_repeat/vel_cmd"));
 
   node->get_parameter(plugin_name_ + ".desired_linear_vel", desired_linear_vel_);
   node->get_parameter(plugin_name_ + ".max_angular_vel", max_angular_vel_);
-  node->get_parameter(plugin_name_ + ".vel_cmd_topic_", vel_cmd_topic_);
+  node->get_parameter(plugin_name_ + ".vel_cmd_topic", vel_cmd_topic_);
 
   cmd_vel_sub_ = node->create_subscription<geometry_msgs::msg::TwistStamped>(vel_cmd_topic_, 100, 
     std::bind(&TeachRepeatController::velCallback, this, std::placeholders::_1));
