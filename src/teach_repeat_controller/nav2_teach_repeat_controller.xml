@@ -1,0 +1,10 @@
+<class_libraries>
+    <library path="nav2_teach_repeat_controller">
+        <class type="nav2_teach_repeat_controller::TeachRepeatController" base_class_type="nav2_core::Controller">
+            <description>
+                nav2_teach_repeat_controller
+            </description>
+        </class>
+    </library>
+</class_libraries>
+
