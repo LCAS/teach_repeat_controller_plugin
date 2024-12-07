@@ -6,8 +6,6 @@
 #include <string>
 #include <memory>
 
-#include "nav2_core/controller_exceptions.hpp"
-#include "nav2_core/planner_exceptions.hpp"
 #include "nav2_util/node_utils.hpp"
 #include "nav2_teach_repeat_controller/teach_repeat_controller.hpp"
 #include "nav2_util/geometry_utils.hpp"
@@ -58,7 +56,7 @@ void TeachRepeatController::cleanup() {
     logger_,
     "Cleaning up controller: %s of type teach_repeat_controller::TeachRepeatController",
     plugin_name_.c_str());
-  global_pub_.reset();
+  clearQueue();
 }
 
 void TeachRepeatController::activate() {
@@ -66,7 +64,7 @@ void TeachRepeatController::activate() {
     logger_,
     "Activating controller: %s of type teach_repeat_controller::TeachRepeatController\"  %s",
     plugin_name_.c_str(),plugin_name_.c_str());
-  global_pub_->on_activate();
+  // global_pub_->on_activate();
 }
 
 void TeachRepeatController::deactivate() {
@@ -74,7 +72,7 @@ void TeachRepeatController::deactivate() {
     logger_,
     "Dectivating controller: %s of type teach_repeat_controller::TeachRepeatController\"  %s",
     plugin_name_.c_str(),plugin_name_.c_str());
-  global_pub_->on_deactivate();
+  // global_pub_->on_deactivate();
 }
 
 void TeachRepeatController::setSpeedLimit(const double& speed_limit, const bool& percentage) {
@@ -84,7 +82,7 @@ void TeachRepeatController::setSpeedLimit(const double& speed_limit, const bool&
 
 geometry_msgs::msg::TwistStamped TeachRepeatController::computeVelocityCommands(
   const geometry_msgs::msg::PoseStamped & pose,
-  const geometry_msgs::msg::Twist & velocity,
+  const geometry_msgs::msg::TwistStamped & velocity,
   nav2_core::GoalChecker * goal_checker) {
   (void)velocity;
   (void)goal_checker;
@@ -105,20 +103,27 @@ geometry_msgs::msg::TwistStamped TeachRepeatController::popFromQueue(){
   std::lock_guard<std::mutex> lock(queue_mutex_);
 
   if (!vel_queue_.empty()){
-    geometry_msgs::msg::Twist msg = vel_queue_.front();
+    geometry_msgs::msg::TwistStamped msg = vel_queue_.front();
     vel_queue_.pop();
     return msg;
   }
 
   // Create TwistStamped message with the 0 linear and angular vel 
   geometry_msgs::msg::TwistStamped default_cmd_vel;
-  cmd_vel.header.stamp = clock_->now(); //TODO: this may cause an issue 
-  cmd_vel.twist.linear.x = 0.0;
-  cmd_vel.twist.angular.z = 0.0;
+  default_cmd_vel.header.stamp = clock_->now(); //TODO: this may cause an issue 
+  default_cmd_vel.twist.linear.x = 0.0;
+  default_cmd_vel.twist.angular.z = 0.0;
 
   return default_cmd_vel; // Return default_cmd_vel
 }
 
+void TeachRepeatController::clearQueue() {
+    std::lock_guard<std::mutex> lock(queue_mutex_);
+    while (!vel_queue_.empty())     {
+        vel_queue_.pop();
+    }
+    RCLCPP_INFO(logger_, "Queue cleared.");
+}
 
 }  // namespace nav2_teach_repeat_controller
 

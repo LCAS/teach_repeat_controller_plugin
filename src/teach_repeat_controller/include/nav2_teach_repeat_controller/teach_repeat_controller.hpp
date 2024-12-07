@@ -63,6 +63,7 @@ protected:
   std::shared_ptr<rclcpp_lifecycle::LifecycleSubscriper<geometry_msgs::msg::TwistStamped>> cmd_vel_sub_;
 
   void velCallback(const geometry_msgs::msg::TwistStamped::SharedPtr msg);
+  void clearQueue();
   geometry_msgs::msg::TwistStamped popFromQueue();
 
 };
